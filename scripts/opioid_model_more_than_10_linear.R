@@ -1110,4 +1110,259 @@ violin_plot <- ggplot(emmeans_df, aes(x = factor(OPIOID_USERS), y = emmean)) +
   labs(x = "Opioid Users", y = "Estimated Mean", title = "Violin Plot of Estimated Means") +
   theme_minimal()
 
+#TABLES
+library(dplyr)
+library(flextable)
+
+getwd()
+setwd("/work/larylab/NAYEMA/MIRNA_OPIOID_BMD_ALL_FINAL_SCRIPTS/SCRIPTS/final full script/result_more_than_10/")
+table1<-read.csv("OPIOID_P_0.05.csv",header=T)
+colnames(table1)
+table1$miRNA <- gsub("_", "-", tolower(table1$miRNA))
+table1$miRNA <- gsub("mir", "miR", table1$miRNA)
+
+
+plotting_columns <- table1 %>% 
+  mutate(P.value = round(P.value, digits = 3),
+         Estimate = round(Estimate, digits = 3),
+         SE = round(`Std..Error`, digits = 3),
+         FDR = round(FDR, digits = 3)) %>% 
+  select(miRNA, Estimate, SE, P.value, variable, FDR)
+
+set_flextable_defaults(
+  font.size = 8, theme_fun = theme_vanilla,
+  padding = 6,
+  tabcolsep = 0,
+  line_spacing = .8,
+  text.align = 'center',
+  #background.color = "#EFEFEF"
+)
+flextable <- flextable(plotting_columns) %>% 
+  set_table_properties(align = 'right', layout = 'autofit')
+
+
+flextable
+save_as_docx(flextable, path = "/work/larylab/NAYEMA/Opioid/results/mirna~opioid-table1.docx")
+
+#TABLE2
+table2<-read.csv("BMD_P_0.05.csv",header=T)
+colnames(table2)
+table2$miRNA <- gsub("_", "-", tolower(table2$miRNA))
+table2$miRNA <- gsub("mir", "miR", table2$miRNA)
+
+
+plotting_columns <- table2 %>% 
+  mutate(P.value = round(P.value, digits = 3),
+         Estimate = round(Estimate, digits = 3),
+         SE = round(`Std..Error`, digits = 3),
+         FDR = round(FDR, digits = 3)) %>% 
+  select(miRNA, Estimate, SE, P.value, variable, FDR)
+
+set_flextable_defaults(
+  font.size = 8, theme_fun = theme_vanilla,
+  padding = 6,
+  tabcolsep = 0,
+  line_spacing = .8,
+  text.align = 'center',
+  #background.color = "#EFEFEF"
+)
+flextable <- flextable(plotting_columns) %>% 
+  set_table_properties(align = 'right', layout = 'autofit')
+
+
+flextable
+save_as_docx(flextable, path = "/work/larylab/NAYEMA/Opioid/results/mirna~BMD-table2.docx")
+
+#TABLE3
+
+table3<-read.csv("Y-BMD-P-0.05.csv",header=T)
+
+colnames(table3)
+table3$miRNA <- gsub("_", "-", tolower(table3$miRNA))
+table3$miRNA <- gsub("mir", "miR", table3$miRNA)
+
+
+plotting_columns <- table3 %>% 
+  mutate( P.value = round(Pr...t.., digits = 3),
+         Estimate = round(Estimate, digits = 3),
+         SE = round(`Std..Error`, digits = 3),
+         FDR = round(FDR, digits = 3)) %>% 
+  select(miRNA, Estimate, SE, P.value,FDR)
+
+set_flextable_defaults(
+  font.size = 8, theme_fun = theme_vanilla,
+  padding = 6,
+  tabcolsep = 0,
+  line_spacing = .8,
+  text.align = 'center',
+  #background.color = "#EFEFEF"
+)
+flextable <- flextable(plotting_columns) %>% 
+  set_table_properties(align = 'right', layout = 'autofit')
+
+
+flextable
+save_as_docx(flextable, path = "/work/larylab/NAYEMA/Opioid/results/BMD~mirna-table3.docx")
+
+# 
+
+table4<-read.csv("int_bmd*mirnaopioid+cov.csv",header=T)
+
+table4 <- table4[!table4$variable %in% c("Age", "SexFemale", "BMI","(Intercept)"), ]
+
+plotting_columns <- table4 %>% 
+  mutate(p.value = round(p.value, digits = 3),
+          Estimate = round(coefficient, digits = 3),
+          SE = round(std.error, digits = 3)) %>% 
+  select(variable, Estimate, SE, p.value)
+  
+
+
+set_flextable_defaults(
+  font.size = 8, theme_fun = theme_vanilla,
+  padding = 6,
+  tabcolsep = 0,
+  line_spacing = .8,
+  text.align = 'center',
+  #background.color = "#EFEFEF"
+)
+flextable <- flextable(plotting_columns) %>% 
+  set_table_properties(align = 'right', layout = 'autofit')
+
+flextable
+save_as_docx(flextable, path = "/work/larylab/NAYEMA/Opioid/results/BMD~mirna*opioid-table4.docx")
+
+#table 5
+
+table5<-read.csv("int_bmd~mirna+opioid+cov.csv", header=T)
+
+table5 <- table5[!table5$variable %in% c("Age", "SexFemale", "BMI","(Intercept)"), ]
+
+plotting_columns <- table5 %>% 
+  mutate(p.value = round(p.value, digits = 3),
+         Estimate = round(coefficient, digits = 3),
+         SE = round(std.error, digits = 3)) %>% 
+  select(variable, Estimate, SE, p.value)
+
+
+
+set_flextable_defaults(
+  font.size = 8, theme_fun = theme_vanilla,
+  padding = 6,
+  tabcolsep = 0,
+  line_spacing = .8,
+  text.align = 'center',
+  #background.color = "#EFEFEF"
+)
+flextable <- flextable(plotting_columns) %>% 
+  set_table_properties(align = 'right', layout = 'autofit')
+
+flextable
+save_as_docx(flextable, path = "/work/larylab/NAYEMA/Opioid/results/BMD~mirna+opioid-table5.docx")
+
+#TABLE 6
+
+table6<-read.csv("INT_MIRNA~BMD*OPIOID.csv", header=T)
+
+plotting_columns <- table6 %>% 
+  mutate(p.value = round(Pr...t.., digits = 3),
+         Estimate = round(Estimate, digits = 3),
+         FDR=round(FDR, digits = 3),
+         SE = round(Std..Error, digits = 3)) %>% 
+  select(miRNA,variable, Estimate, SE, p.value,FDR)
+
+set_flextable_defaults(
+  font.size = 8, theme_fun = theme_vanilla,
+  padding = 6,
+  tabcolsep = 0,
+  line_spacing = .8,
+  text.align = 'center',
+  #background.color = "#EFEFEF"
+)
+flextable <- flextable(plotting_columns) %>% 
+  set_table_properties(align = 'right', layout = 'autofit')
+
+flextable
+save_as_docx(flextable, path = "/work/larylab/NAYEMA/Opioid/results/mirna~BMD*opioid-table6.docx")
+
+#Table 7 
+
+table7<-read.csv("INT_MIRNA~BMD+OPIOID.csv", header=T)
+
+plotting_columns <- table7 %>% 
+  mutate(p.value = round(Pr...t.., digits = 3),
+         Estimate = round(Estimate, digits = 3),
+         FDR=round(FDR, digits = 3),
+         SE = round(Std..Error, digits = 3)) %>% 
+  select(miRNA,variable, Estimate, SE, p.value,FDR)
+
+set_flextable_defaults(
+  font.size = 8, theme_fun = theme_vanilla,
+  padding = 6,
+  tabcolsep = 0,
+  line_spacing = .8,
+  text.align = 'center',
+  #background.color = "#EFEFEF"
+)
+flextable <- flextable(plotting_columns) %>% 
+  set_table_properties(align = 'right', layout = 'autofit')
+
+flextable
+save_as_docx(flextable, path = "/work/larylab/NAYEMA/Opioid/results/mirna~BMD+opioid-table7.docx")
+
+#emmeans
+
+library(emmeans)
+library(ggplot2)
+
+# Assuming 'opioid_users' is the variable indicating opioid users (1 and 0)
+# and 'value' is the variable you want to plot
+model <- lm(BMD~ OPIOID_USERS + Age + Sex + BMI, data = cohort)
+
+# Summary of the linear model
+summary(model)
+
+# Obtain emmeans
+emmeans_values <- emmeans(model, "OPIOID_USERS")
+
+# Convert emmeans values to a data frame
+emmeans_df <- as.data.frame(emmeans_values)
+
+# Extract the p-value for 'OPIOID_USERS'
+p_value <- summary(model)$coefficients["OPIOID_USERS", "Pr(>|t|)"]
+
+
+
+
+cohort$OPIOID_USERS <- factor(cohort$OPIOID_USERS, levels = c(0, 1), labels = c("Non-user", "User"))
+
+# Create the box plot using ggplot2 with updated labels
+p <- ggplot(cohort, aes(x = OPIOID_USERS, y = BMD, fill = OPIOID_USERS)) +
+  geom_boxplot(width = 0.5, color = "black", alpha = 0.8) +
+  labs(x = "Opioid Users", y = "BMD",
+       title = paste("Box Plot of BMD by Opioid Users"),
+       fill = "Opioid Users") +
+  theme_minimal() +
+  theme(legend.title = element_text(size = 16, face = "bold"),  # Set legend title size and make it bold
+        legend.text = element_text(size = 16, face = "bold"),   # Set legend text size and make it bold
+        axis.title.x = element_text(size = 20, face = "bold"),   # Set x-axis title size and make it bold
+        axis.title.y = element_text(size = 20, face = "bold"),   # Set y-axis title size and make it bold
+        axis.text.x = element_text(size = 16, face = "bold"),    # Set x-axis text size and make it bold
+        axis.text.y = element_text(size = 16, face = "bold"),    # Set y-axis text size and make it bold
+        plot.title = element_text(size = 20, hjust = 0.5, face = "bold"),  # Set title size and center alignment and make it bold
+        legend.position = "top",  # Position legend at the top
+        panel.background = element_rect(fill = "white")) +  # Set background color to white
+  scale_fill_manual(values = c("#00AFBB", "#E7B800"), 
+                    labels = c("Non-user", "User"))  # Set custom fill colors and labels
+
+# Display the plot
+print(p)
+p+  # Set custom fill colors and labels
+  annotate("text", x = 2, y = max(cohort$BMD), 
+           label = paste("p-value =", round(p_value, 3)), 
+           size = 5, color = "black")
+ggsave("boxplot.eps", plot = p, device = "eps", width = 8, height = 6)
+
+# Save the plot as PNG
+ggsave("boxplot.png", plot = p, device = "png", width = 8, height = 6, dpi = 300, limitsize = FALSE)
 
